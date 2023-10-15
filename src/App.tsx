@@ -21,14 +21,16 @@ const locations = [
 
 interface record {
   id: number;
-  currentIn: number;
-  roll_no: string;
-  name: string;
-  description: string;
-  hostel: string;
-  room_no: string;
-  mobile_number: string;
-  status: number;
+  currentIn: number | null;
+  roll_no: string | null;
+  name: string | null;
+  description: string | null;
+  hostel: string | null;
+  room_no: string | null;
+  mobile_number: string | null;
+  status: number | null;
+  entry_at: string | null;
+  exit_at: string | null;
 }
 
 function App() {
@@ -177,6 +179,12 @@ const RecordComponent = ({
               Hostel
             </TableCell>
             <TableCell>
+              Entry at
+            </TableCell>
+            <TableCell>
+              Exit at
+            </TableCell>
+            <TableCell>
               Description
             </TableCell>
           </TableRow>
@@ -205,6 +213,16 @@ const RecordComponent = ({
                 {record.hostel}
               </TableCell>
               <TableCell>
+                {formatDate(
+                  record.entry_at
+                )}
+              </TableCell>
+              <TableCell>
+                {formatDate(
+                  record.entry_at
+                )}
+              </TableCell>
+              <TableCell>
                 {record.description}
               </TableCell>
             </TableRow>
@@ -212,6 +230,43 @@ const RecordComponent = ({
         </TableBody>
       </Table>
     </TableContainer>
+  );
+};
+
+const formatDate = (
+  dateString: string | null
+) => {
+  if (dateString === null) return "";
+  const date = new Date(dateString);
+
+  // Format time to HH:MM:SS
+  const hours = date
+    .getUTCHours()
+    .toString()
+    .padStart(2, "0");
+  const minutes = date
+    .getUTCMinutes()
+    .toString()
+    .padStart(2, "0");
+  const seconds = date
+    .getUTCSeconds()
+    .toString()
+    .padStart(2, "0");
+  const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+  // Format date to YYYY-MM-DD
+  const year = date.getUTCFullYear();
+  const month = (date.getUTCMonth() + 1)
+    .toString()
+    .padStart(2, "0");
+  const day = date
+    .getUTCDate()
+    .toString()
+    .padStart(2, "0");
+  const formattedDate = `${year}-${month}-${day}`;
+
+  return (
+    formattedTime + " " + formattedDate
   );
 };
 
