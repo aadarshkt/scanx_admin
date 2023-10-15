@@ -49,6 +49,10 @@ function App() {
         "http://localhost:8080/location",
         { params: { location: data } }
       );
+      console.log(
+        "Fetched location data"
+      );
+      console.log(response);
       setRecords(response.data);
     } catch (e) {
       console.error(
@@ -58,18 +62,20 @@ function App() {
     }
   };
 
-  //handleValue after user presses enter.
+  //handleValue of location after user presses enter.
   const handleValue = async (
     newValue: string | undefined
   ) => {
     setValue(newValue);
-    newValue = newValue?.toUpperCase();
     if (newValue == undefined) {
       console.log(
         "The value was undefined"
       );
       return;
     }
+    newValue =
+      newValue.charAt(0).toUpperCase() +
+      newValue.slice(1);
     await fetchData(newValue);
   };
   return (
