@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
+import { baseUrl } from "./api/baseUrl.js";
 
 const locations = [
   "Library",
@@ -41,6 +42,10 @@ function App() {
     useState("");
   const [records, setRecords] =
     useState<record[]>([]);
+  const [
+    number_of_students_present,
+    set_number_of_students_present,
+  ] = useState<number>(0);
 
   const fetchData = async (
     data: string
@@ -48,7 +53,7 @@ function App() {
     console.log(data);
     try {
       const response = await axios.get(
-        "http://localhost:8080/location",
+        `${baseUrl}/location`,
         { params: { location: data } }
       );
       console.log(
@@ -56,6 +61,22 @@ function App() {
       );
       console.log(response);
       setRecords(response.data);
+      const total_students_present =
+        response.data.reduce(
+          (
+            accumulator: number,
+            current: record
+          ) => {
+            if (current.status == 1) {
+              return accumulator + 1;
+            }
+            return accumulator;
+          },
+          0
+        );
+      set_number_of_students_present(
+        total_students_present
+      );
     } catch (e) {
       console.error(
         "There was an error fetching the location" +
@@ -98,7 +119,13 @@ function App() {
             "space-between",
           alignItems: "center",
         }}>
-        <h1>Admin Panel</h1>
+        <Box
+          sx={{
+            fontFamily: "Poppins",
+            fontSize: 32,
+          }}>
+          Admin Panel
+        </Box>
         <Autocomplete
           style={{
             width: "30%",
@@ -138,6 +165,29 @@ function App() {
           )}
         />
       </Box>
+      <Box
+        sx={{
+          fontFamily: "Poppins",
+          fontSize: 24,
+          border: 2,
+          borderColor: "lightgrey",
+          wordWrap: "normal",
+          marginTop: 10,
+          marginLeft: 20,
+          marginRight: 20,
+          marginBottom: 10,
+          padding: 5,
+          borderRadius: 10,
+        }}>
+        {number_of_students_present > 0
+          ? `${number_of_students_present} student${
+              number_of_students_present >
+              1
+                ? "s"
+                : ""
+            } present`
+          : "Currently there is no student inside the location"}
+      </Box>
       <RecordComponent
         records={records}
       />
@@ -161,30 +211,62 @@ const RecordComponent = ({
         stickyHeader
         sx={{
           minWidth: 650,
+          fontFamily: "Poppins",
         }}>
         <TableHead>
           <TableRow>
-            <TableCell>Id</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>
+            <TableCell
+              sx={{
+                fontFamily: "Poppins",
+              }}>
+              Id
+            </TableCell>
+            <TableCell
+              sx={{
+                fontFamily: "Poppins",
+              }}>
+              Name
+            </TableCell>
+            <TableCell
+              sx={{
+                fontFamily: "Poppins",
+              }}>
               Roll No
             </TableCell>
-            <TableCell>
+            <TableCell
+              sx={{
+                fontFamily: "Poppins",
+              }}>
               Mobile Number
             </TableCell>
-            <TableCell>
+            <TableCell
+              sx={{
+                fontFamily: "Poppins",
+              }}>
               Room No
             </TableCell>
-            <TableCell>
+            <TableCell
+              sx={{
+                fontFamily: "Poppins",
+              }}>
               Hostel
             </TableCell>
-            <TableCell>
+            <TableCell
+              sx={{
+                fontFamily: "Poppins",
+              }}>
               Entry at
             </TableCell>
-            <TableCell>
+            <TableCell
+              sx={{
+                fontFamily: "Poppins",
+              }}>
               Exit at
             </TableCell>
-            <TableCell>
+            <TableCell
+              sx={{
+                fontFamily: "Poppins",
+              }}>
               Description
             </TableCell>
           </TableRow>
@@ -194,25 +276,43 @@ const RecordComponent = ({
             <TableRow
               key={record.id}
               hover>
-              <TableCell>
+              <TableCell
+                sx={{
+                  fontFamily: "Poppins",
+                }}>
                 {record.id}
               </TableCell>
-              <TableCell>
+              <TableCell
+                sx={{
+                  fontFamily: "Poppins",
+                }}>
                 {record.name}
               </TableCell>
               <TableCell>
                 {record.roll_no}
               </TableCell>
-              <TableCell>
+              <TableCell
+                sx={{
+                  fontFamily: "Poppins",
+                }}>
                 {record.mobile_number}
               </TableCell>
-              <TableCell>
+              <TableCell
+                sx={{
+                  fontFamily: "Poppins",
+                }}>
                 {record.room_no}
               </TableCell>
-              <TableCell>
+              <TableCell
+                sx={{
+                  fontFamily: "Poppins",
+                }}>
                 {record.hostel}
               </TableCell>
-              <TableCell>
+              <TableCell
+                sx={{
+                  fontFamily: "Poppins",
+                }}>
                 {formatDate(
                   record.entry_at
                 )}
@@ -222,7 +322,10 @@ const RecordComponent = ({
                   record.entry_at
                 )}
               </TableCell>
-              <TableCell>
+              <TableCell
+                sx={{
+                  fontFamily: "Poppins",
+                }}>
                 {record.description}
               </TableCell>
             </TableRow>
