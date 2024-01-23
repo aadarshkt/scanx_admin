@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { baseUrl } from "./api/baseUrl.js";
+import { DNA } from "react-loader-spinner";
 
 const locations = ["Library", "SAC", "Jasper"];
 
@@ -38,6 +39,7 @@ function App() {
   const [number_of_students_present, set_number_of_students_present] = useState<number>(0);
   const [entry_order, set_entry_order] = useState<Order>("asc");
   const [exit_order, set_exit_order] = useState<Order>("asc");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSort = (columnLabel: keyof record) => {
     const sortedArray = [...records];
@@ -64,6 +66,7 @@ function App() {
 
   const fetchData = async (data: string) => {
     console.log(data);
+    setLoading(true);
     try {
       const response = await axios.get(`${baseUrl}/location`, { params: { location: data } });
       console.log("Fetched location data");
@@ -80,6 +83,9 @@ function App() {
       set_number_of_students_present(total_students_present);
     } catch (e) {
       console.error("There was an error fetching the location" + e);
+      alert("There was an error fetching the location" + e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -146,24 +152,29 @@ function App() {
           )}
         />
       </Box>
-      <Box
-        sx={{
-          fontFamily: "Poppins",
-          fontSize: 24,
-          border: 2,
-          borderColor: "lightgrey",
-          wordWrap: "normal",
-          marginTop: 10,
-          marginLeft: 20,
-          marginRight: 20,
-          marginBottom: 10,
-          padding: 5,
-          borderRadius: 10,
-        }}>
-        {number_of_students_present > 0
-          ? `${number_of_students_present} student${number_of_students_present > 1 ? "s" : ""} present`
-          : "Currently there is no student inside the location"}
-      </Box>
+
+      {loading ? (
+        <DNA height="80" width="80" ariaLabel="DNA" />
+      ) : (
+        <Box
+          sx={{
+            fontFamily: "Poppins",
+            fontSize: 24,
+            border: 2,
+            borderColor: "lightgrey",
+            wordWrap: "normal",
+            marginTop: 10,
+            marginLeft: 20,
+            marginRight: 20,
+            marginBottom: 10,
+            padding: 5,
+            borderRadius: 10,
+          }}>
+          {number_of_students_present > 0
+            ? `${number_of_students_present} student${number_of_students_present > 1 ? "s" : ""} present`
+            : "Currently there is no student inside the location"}
+        </Box>
+      )}
       <RecordComponent records={records} handleSort={handleSort} entry_order={entry_order} exit_order={exit_order} />
     </Box>
   );
